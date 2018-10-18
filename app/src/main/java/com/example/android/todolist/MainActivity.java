@@ -16,8 +16,8 @@
 
 package com.example.android.todolist;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -108,12 +108,12 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
         });
 
         mDb = TaskDatabase.getInstance(getApplicationContext());
-        retrieveTasks();
+        setupViewModel();
     }
 
-    private void retrieveTasks() {
-        final LiveData<List<TaskEntry>> tasks = mDb.taskDao().loadAllTasks();
-        tasks.observe(this, new Observer<List<TaskEntry>>() {
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getTasks().observe(this, new Observer<List<TaskEntry>>() {
             @Override
             public void onChanged(@Nullable List<TaskEntry> tasks) {
                 mAdapter.setTasks(tasks);
